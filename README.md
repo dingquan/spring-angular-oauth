@@ -1,4 +1,5 @@
 A test app that tries to use the following
+
 1. Angular single page webapp
 2. Spring boot backend
 3. A AuthServer with tokens backed by a jdbc token store
