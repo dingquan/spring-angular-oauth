@@ -1,0 +1,45 @@
+security:
+  oauth2:
+    client:
+      client-id: acme
+      client-secret: acmesecret
+      scope: read,write
+      auto-approve-scopes: '.*'
+
+facebook:
+  client:
+    clientId: 233668646673605
+    clientSecret: 33b17e044ee6a4fa383f46ec6e28ea1d
+    accessTokenUri: https://graph.facebook.com/oauth/access_token
+    userAuthorizationUri: https://www.facebook.com/dialog/oauth
+    tokenName: oauth_token
+    authenticationScheme: query
+    clientAuthenticationScheme: form
+  resource:
+    userInfoUri: https://graph.facebook.com/me
+
+multipart:
+    maxFileSize: 5MB
+    maxRequestSize: 5MB
+
+# spring already does JSR-303 bean validation. no need for hibernate validation
+spring.jpa.properties.javax.persistence.validation.mode: none
+
+server.compression.enabled: true
+server.compression.mime-types: application/json,application/xml,text/html,text/xml,text/plain,application/javascript,text/css
+
+spring.resources.cache-period: 3600
+
+
+spring:
+    datasource.platform: h2
+
+
+logging:
+    level:
+        root: INFO
+        org.springframework.security: DEBUG
+    path: logs
+
+
+
