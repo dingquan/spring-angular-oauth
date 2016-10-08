@@ -24,11 +24,11 @@ angular.module('hello', [ 'ngRoute' ]).config(function($routeProvider, $httpProv
 
 			var authenticate = function(credentials, callback) {
 
-				// var headers = credentials ? {
-				// 	authorization : "Basic "
-				// 			+ btoa(credentials.username + ":"
-				// 					+ credentials.password)
-				// } : {};
+				 var headers = credentials ? {
+				 	authorization : "Basic "
+				 			+ btoa(credentials.username + ":"
+				 					+ credentials.password)
+				 } : {};
 
 				$http.get('user', {
 					headers : headers
