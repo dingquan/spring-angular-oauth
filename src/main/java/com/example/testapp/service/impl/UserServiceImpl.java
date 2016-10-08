@@ -9,7 +9,6 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.oauth2.config.annotation.web.configuration.AuthorizationServerConfigurer;
 import org.springframework.stereotype.Service;
 
-import com.example.testapp.exception.EntityNotFoundException;
 import com.example.testapp.model.User;
 import com.example.testapp.service.UserService;
 import com.example.testapp.util.NullAwareBeanUtils;
@@ -66,9 +65,7 @@ public class UserServiceImpl extends BaseServiceImpl implements UserService {
 			log.info("User updated successfully. userId=" + id);
 			return dbUser;
 		} else {
-			String error = "Error updating user. User with the id not found. userId=" + id;
-			log.error(error);
-			throw new EntityNotFoundException(error);
+			throw new javax.persistence.EntityNotFoundException();
 		}
 	}
 

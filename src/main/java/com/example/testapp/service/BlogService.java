@@ -22,5 +22,4 @@ public interface BlogService {
 
 	public Blog changeStatus(String id, Status status);
 
-	public Page<Blog> findPromotedBlogs(Pageable halfPage);
 }

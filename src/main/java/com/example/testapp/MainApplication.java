@@ -25,10 +25,7 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.builder.SpringApplicationBuilder;
 import org.springframework.boot.web.support.SpringBootServletInitializer;
-import org.springframework.context.annotation.Bean;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.validation.beanvalidation.LocalValidatorFactoryBean;
-
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -37,6 +34,7 @@ import org.springframework.web.bind.annotation.RestController;
 public class MainApplication extends SpringBootServletInitializer {
 
     @RequestMapping({ "/user", "/me" })
+    @PreAuthorize("isAuthenticated()")
     public Principal user(Principal principal) {
         return principal;
     }
@@ -64,10 +62,6 @@ public class MainApplication extends SpringBootServletInitializer {
     	return application.sources(MainApplication.class);
     }
 	
-    @Bean
-    public javax.validation.Validator localValidatorFactoryBean() {
-       return new LocalValidatorFactoryBean();
-    }
 }
 
 

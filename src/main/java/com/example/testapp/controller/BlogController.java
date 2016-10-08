@@ -22,7 +22,6 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.context.request.WebRequest;
 
-import com.example.testapp.exception.BadRequestException;
 import com.example.testapp.model.Blog;
 import com.example.testapp.model.Blog.Status;
 import com.example.testapp.security.AuthenticatedUser;
@@ -37,23 +36,6 @@ public class BlogController {
 	@Autowired
 	private BlogService blogService;
 	
-	@InitBinder
-	protected void initBinder(WebDataBinder binder, WebRequest webRequest) {
-		String autoSave = webRequest.getParameter("auto_save");
-		// skip bean validation if the request has auto_save parameter set to true
-		// to allow user save intermediate/unfinished data
-	    if ("true".equalsIgnoreCase(autoSave)) {
-	    	binder.setValidator(null);
-	    }
-	    if (binder.getTarget() instanceof Blog) {
-	    	Blog blog = (Blog) binder.getTarget();
-			// skip bean validation if the deal status is DRAFT
-			// to allow user save intermediate/unfinished data
-	    	if (Blog.Status.DRAFT.equals(blog.getStatus())) {
-	    		binder.setValidator(null);
-	    	}
-	    }
-	}
 	
 	@RequestMapping(value = "", method = RequestMethod.GET)
 	@PreAuthorize("isAuthenticated()")
@@ -69,18 +51,14 @@ public class BlogController {
 	public ResponseEntity<Blog> createBlog(@AuthenticationPrincipal AuthenticatedUser currentUser,
 											@RequestBody @Valid final Blog blog) {
 		log.info("Create blog. title=" + blog.getTitle() + ", userId=" + StringUtil.nullSafeString(currentUser.getId()));
-		if (blog.getId() != null) {
-			String error = "Setting id property is not allowed when creating blogs";
-			log.error(error);
-			throw new BadRequestException(error);
-		} else {
-			Blog savedBlog = blogService.createBlog(blog);
-			log.info("Blog saved successfully. blogId=" + blog.getId());
-			return ResponseEntity.ok(savedBlog);
-		}
+
+		Blog savedBlog = blogService.createBlog(blog);
+		log.info("Blog saved successfully. blogId=" + blog.getId());
+		return ResponseEntity.ok(savedBlog);
 	}
 	
 	@RequestMapping(value = "/{id}", method = RequestMethod.GET)
+	@PreAuthorize("isAuthenticated()")
 	public ResponseEntity<Blog> getBlogById(@PathVariable String id) {
 		log.info("Get blog for id=" + id);
 		Blog blog = blogService.getBlog(id);

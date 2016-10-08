@@ -1,6 +1,7 @@
 package com.example.testapp.controller;
 
 
+import javax.persistence.EntityNotFoundException;
 import javax.validation.Valid;
 
 import org.slf4j.Logger;
@@ -19,9 +20,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.example.testapp.exception.BadRequestException;
-import com.example.testapp.exception.EntityAlreadyExistsException;
-import com.example.testapp.exception.EntityNotFoundException;
 import com.example.testapp.model.Blog;
 import com.example.testapp.model.User;
 import com.example.testapp.security.AuthenticatedUser;
@@ -47,17 +45,7 @@ public class UserController {
     public ResponseEntity<User> createUser(@RequestBody @Valid final User user) {
 
     	log.info("create user. user=" + StringUtil.toJson(user));
-    	
-    	if (user.getEmail() == null) {
-    		String error = "Error creating user. Required field email is missing";
-    		log.error(error);
-    		throw new BadRequestException(error);
-    	}
-    	if (user.getId() != null || userService.findByEmail(user.getEmail()) != null) {
-    		String error = "Error creating user. User with the id already exists. userId=" + StringUtil.nullSafeString(user.getId());
-    		log.error(error);
-    		throw new EntityAlreadyExistsException(error);
-    	}
+    
     	User savedUser = userService.createUser(user);
     	log.info("User created successfully. userId=" + user.getId());
     	return ResponseEntity.ok(savedUser);
@@ -86,7 +74,7 @@ public class UserController {
     }
     
     
-    @PreAuthorize("(isFullyAuthenticated() and (authentication.principal.id == #user.id)) or hasRole('ADMIN')")
+    @PreAuthorize("(isFullyAuthenticated() and (authentication.principal.id == #user.id))")
     @RequestMapping(value = "/{id}", method = RequestMethod.DELETE)
     public ResponseEntity<String> deleteUser(@PathVariable String id) {
     	log.info("delete user with id=" + id);
@@ -102,7 +90,6 @@ public class UserController {
     }
     
 	@RequestMapping(value = "/{id}", method = RequestMethod.GET)
-	@PreAuthorize("hasRole('ADMIN')")
 	public ResponseEntity<User> getUserById(@PathVariable String id) {
 		log.info("get user with id=" + id);
 		User user = userService.findById(id);

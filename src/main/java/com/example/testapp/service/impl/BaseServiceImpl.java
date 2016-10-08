@@ -6,7 +6,6 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 
 import com.example.testapp.dao.UserRepository;
-import com.example.testapp.exception.UserNotLoggedInException;
 import com.example.testapp.model.User;
 import com.example.testapp.security.AuthenticatedUser;
 import com.example.testapp.service.BaseService;
@@ -41,9 +40,6 @@ public class BaseServiceImpl implements BaseService{
 				String id = ((AuthenticatedUser) principal).getId();
 				user = userRepository.findOne(id);
 			}
-		}
-		if (user == null) {
-			throw new UserNotLoggedInException("User not logged in");
 		}
 		return user;
 	}

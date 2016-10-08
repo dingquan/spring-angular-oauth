@@ -7,8 +7,6 @@ import java.util.Set;
 
 import org.springframework.stereotype.Component;
 
-import com.example.testapp.exception.InternalErrorException;
-
 @Component
 public class NullAwareBeanUtils extends org.apache.commons.beanutils.BeanUtilsBean2 {
 	private Set<String> ignoreProperties = new HashSet<String>();
@@ -55,10 +53,8 @@ public class NullAwareBeanUtils extends org.apache.commons.beanutils.BeanUtilsBe
 		}
 		try {
 			super.copyProperty(bean, name, value);
-		} catch (IllegalAccessException e) {
-			throw new InternalErrorException("Error while copying bean properties.", e);
-		} catch (InvocationTargetException e) {
-			throw new InternalErrorException("Error while copying bean properties.", e);
+		} catch (IllegalAccessException | InvocationTargetException e) {
+			throw new RuntimeException("Error while copying bean properties.", e);
 		}
 	}
 
@@ -66,10 +62,8 @@ public class NullAwareBeanUtils extends org.apache.commons.beanutils.BeanUtilsBe
 	public void copyProperties(Object dest, Object orig) {
 		try {
 			super.copyProperties(dest, orig);
-		} catch (IllegalAccessException e) {
-			throw new InternalErrorException("Error while copying bean properties.", e);
-		} catch (InvocationTargetException e) {
-			throw new InternalErrorException("Error while copying bean properties.", e);
+		} catch (IllegalAccessException | InvocationTargetException e) {
+			throw new RuntimeException("Error while copying bean properties.", e);
 		}
 	}
 }
