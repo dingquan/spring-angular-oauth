@@ -3,89 +3,44 @@ angular.module('hello', [ 'ngRoute' ]).config(function($routeProvider, $httpProv
 	$routeProvider.when('/', {
 		templateUrl : 'home.html',
 		controller : 'home',
-		controllerAs: 'controller'
-	}).when('/login', {
-		templateUrl : 'login.html',
-		controller : 'navigation',
-		controllerAs: 'controller'
+		controllerAs : 'controller'
 	}).otherwise('/');
 
 	$httpProvider.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest';
+	$httpProvider.defaults.headers.common['Accept'] = 'application/json';
 
 }).controller('navigation',
 
-		function($rootScope, $http, $location, $route) {
-			
-			var self = this;
+	function($rootScope, $http, $location, $route) {
 
-			self.tab = function(route) {
-				return $route.current && route === $route.current.controller;
-			};
+		var self = this;
 
-			var authenticate = function(credentials, callback) {
+		self.tab = function(route) {
+			return $route.current && route === $route.current.controller;
+		};
 
-				 var headers = credentials ? {
-				 	authorization : "Basic "
-				 			+ btoa(credentials.username + ":"
-				 					+ credentials.password)
-				 } : {};
-
-				$http.get('user', {
-					headers : headers
-				}).then(function(response) {
-					if (response.data.name) {
-						$rootScope.authenticated = true;
-					} else {
-						$rootScope.authenticated = false;
-					}
-					callback && callback($rootScope.authenticated);
-				}, function() {
-					$rootScope.authenticated = false;
-					callback && callback(false);
-				});
-
+		$http.get('user').then(function(response) {
+			if (response.data.name) {
+				$rootScope.authenticated = true;
+			} else {
+				$rootScope.authenticated = false;
 			}
+		}, function() {
+			$rootScope.authenticated = false;
+		});
 
-			authenticate();
+		self.credentials = {};
 
-			self.credentials = {};
-			self.login = function() {
-				authenticate(self.credentials, function(authenticated) {
-					if (authenticated) {
-						console.log("Login succeeded")
-						$location.path("/");
-						self.error = false;
-						$rootScope.authenticated = true;
-					} else {
-						console.log("Login failed")
-						$location.path("/login");
-						self.error = true;
-						$rootScope.authenticated = false;
-					}
-				})
-			};
-
-			self.logout = function() {
-				$http.post('logout', {}).finally(function() {
-					$rootScope.authenticated = false;
-					$location.path("/");
-				});
-			}
-			
-
-
-		}).controller('home', function($http) {
-			var self = this;
-			$http.get('/resource/').then(function(response) {
-				self.greeting = response.data;
+		self.logout = function() {
+			$http.post('logout', {}).finally(function() {
+				$rootScope.authenticated = false;
+				$location.path("/");
 			});
-
-			self.test = function() {
-				$http.get("/api/blogs").success(function(data) {
-					alert(JSON.stringify(data.response));
-				}).error(function(error) {
-					alert(JSON.stringify(error))
-				})
-			};
 		}
-);
+
+	}).controller('home', function($http) {
+	var self = this;
+	$http.get('resource/').then(function(response) {
+		self.greeting = response.data;
+	})
+});
