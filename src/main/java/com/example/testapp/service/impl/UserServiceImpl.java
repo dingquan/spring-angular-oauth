@@ -1,30 +1,19 @@
 package com.example.testapp.service.impl;
 
-import javax.transaction.Transactional;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.security.oauth2.config.annotation.web.configuration.AuthorizationServerConfigurer;
-import org.springframework.stereotype.Service;
-
 import com.example.testapp.model.User;
 import com.example.testapp.service.UserService;
 import com.example.testapp.util.NullAwareBeanUtils;
 import com.example.testapp.util.StringUtil;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.stereotype.Service;
+
+import javax.transaction.Transactional;
 
 @Service
 public class UserServiceImpl extends BaseServiceImpl implements UserService {
 	private final Logger log = LoggerFactory.getLogger(this.getClass());
-	
-	@Value("${security.oauth2.client.client-id}")
-	private String clientId;
-	
-	
-	@Autowired
-	private AuthorizationServerConfigurer authServer;
-	
+
 	@Override
 	public User findById(String id) {
 		User user = userRepository.findOne(id);
